@@ -91,6 +91,7 @@ module Paperclip
       trans << "-coalesce" if animated?
       trans << "-resize" << %["#{scale}"] unless scale.nil? || scale.empty?
       trans << "-crop" << %["#{crop}"] << "+repage" if crop
+      trans << "-colorspace" << "rgb"
       trans
     end
 
