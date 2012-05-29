@@ -19,17 +19,25 @@ module Paperclip
     end
 
     def destroy_attached_files
-      Paperclip.log("Deleting attachments.")
-      each_attachment do |name, attachment|
-        attachment.send(:flush_deletes)
+      if Rails.env == 'production'
+        Paperclip.log("Deleting attachments.")
+        each_attachment do |name, attachment|
+          attachment.send(:flush_deletes)
+        end
+      else
+        Paperclip.log("Not in production. Attachments aren't deleted from the repository.")
       end
     end
 
     def prepare_for_destroy
-      Paperclip.log("Scheduling attachments for deletion.")
-      each_attachment do |name, attachment|
-        attachment.send(:queue_all_for_delete)
-      end
+      if Rails.env == 'production'
+        Paperclip.log("Scheduling attachments for deletion.")
+        each_attachment do |name, attachment|
+          attachment.send(:queue_all_for_delete)
+        end
+      else
+        Paperclip.log("Not in production. Attachments aren't deleted from the repository.")
+      end    
     end
   end
 end
